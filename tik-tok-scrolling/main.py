@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from decouple import config
+from selenium.common.exceptions import NoSuchElementException
+
 
 driver = undetected_chromedriver.Chrome()
 
@@ -22,17 +24,20 @@ try:
 
     # login name
     channel_item = WebDriverWait(driver, 3).until(
-        EC.element_to_be_clickable((By.CLASS_NAME, "css-1j4ihbo-DivBoxContainer"))
+        EC.element_to_be_clickable(
+            (By.CLASS_NAME, "css-1j4ihbo-DivBoxContainer"))
     )
 
-    p_element = channel_item.find_element(By.XPATH, "//p[text()='Введите телефон / почту / имя пользователя']")
+    p_element = channel_item.find_element(
+        By.XPATH, "//p[text()='Введите телефон / почту / имя пользователя']")
 
     p_element.click()
     time.sleep(3)
 
     # login link
     login_link = WebDriverWait(driver, 3).until(
-        EC.element_to_be_clickable((By.LINK_TEXT, "Войти через эл. почту или имя пользователя"))
+        EC.element_to_be_clickable(
+            (By.LINK_TEXT, "Войти через эл. почту или имя пользователя"))
     )
 
     login_link.click()
@@ -50,7 +55,8 @@ try:
 
     # Password input
     password_input = WebDriverWait(driver, 3).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "css-wv3bkt-InputContainer"))
+        EC.presence_of_element_located(
+            (By.CLASS_NAME, "css-wv3bkt-InputContainer"))
     )
 
     password_input.send_keys(password)
@@ -61,10 +67,31 @@ try:
     )
 
     login_button.click()
-    time.sleep(5)
+    time.sleep(20)
+
+
+# Pressing enter until it enters----------------------------
+
+
+    def some_condition():
+        try:
+            driver.find_element(By.CLASS_NAME, "e1w6iovg0")
+            return True
+        except NoSuchElementException:
+            return False
+
+    while some_condition():
+        login_button = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "e1w6iovg0"))
+        )
+
+        # Click on the button
+        login_button.click()
+        time.sleep(10)
+# ----------------------------------------------------------
 
     # Recommended videos
-    click_recommendation = WebDriverWait(driver, 3).until(
+    click_recommendation = WebDriverWait(driver, 5).until(
         EC.presence_of_element_located(
             (By.CLASS_NAME, "css-1dhhdo4-SpanMainNavText"))
     )
@@ -74,8 +101,15 @@ try:
 
     # Page scrolling
     for _ in range(5):
+        like_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'span[data-e2e="like-icon"].css-6jur1x-SpanIconWrapper'))
+        )
+
+        like_button.click()
+
         driver.execute_script("window.scrollBy(0, 800);")
-        time.sleep(2)
+        time.sleep(10)
 
 
 except Exception as ex:
